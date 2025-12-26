@@ -16,7 +16,7 @@ class DateTimeController extends Controller
             'status'     => true,
             'message'    => 'Current Date and Time',
             'country'    => 'India',             
-            'date'=> $now->format('d-m-Y '),
+            'date'       => $now->format('d-m-Y'),
             'time'       => $now->format('h:i A'),
         ]);
     }
