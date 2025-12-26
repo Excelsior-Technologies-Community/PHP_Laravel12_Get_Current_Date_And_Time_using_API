@@ -55,6 +55,7 @@ php  artisan serve
 # Paste Url http://127.0.0.1:8000/api/current-date-time
 # Now Click send Button and show the result
 
-<img width="1731" height="573" alt="image" src="https://github.com/user-attachments/assets/4c9d68a8-4de8-456d-a6a9-b75ab6abb9e9" />
+<img width="1746" height="665" alt="image" src="https://github.com/user-attachments/assets/a09b5b38-9f2c-419e-80df-c89655d59ffd" />
+
 
  
