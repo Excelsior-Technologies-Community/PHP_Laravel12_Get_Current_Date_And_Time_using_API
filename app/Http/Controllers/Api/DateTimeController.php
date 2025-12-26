@@ -9,17 +9,15 @@ class DateTimeController extends Controller
 {
     public function getCurrentDateTime()
     {
-        // ✅ India Time (IST)
+        //  India Time (IST)
         $now = Carbon::now('Asia/Kolkata');
 
         return response()->json([
             'status'     => true,
             'message'    => 'Current Date and Time',
-            'country'    => 'India',              // ✅ COUNTRY ADDED
-            'date'       => $now->toDateString(),
-            'time'       => $now->toTimeString(),
-            'date_time'  => $now->toDateTimeString(),
-            'timezone'   => 'Asia/Kolkata',
+            'country'    => 'India',             
+            'date'=> $now->format('d-m-Y '),
+            'time'       => $now->format('h:i A'),
         ]);
     }
 }
