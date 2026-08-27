@@ -252,7 +252,7 @@ class DateTimeController extends Controller
             'current_time' => $currentTime,
 
             'current_day' =>
-                $dayNames[$currentDay] ?? 'Unknown',
+            $dayNames[$currentDay] ?? 'Unknown',
 
             'timezone' => $timezone,
 
@@ -260,7 +260,7 @@ class DateTimeController extends Controller
                 'start' => $startTime,
                 'end' => $endTime,
                 'working_days' => array_map(
-                    fn ($d) => $dayNames[$d] ?? $d,
+                    fn($d) => $dayNames[$d] ?? $d,
                     $workingDays
                 ),
             ],
@@ -330,17 +330,13 @@ class DateTimeController extends Controller
             'php_version' => phpversion(),
             'timezone' => config('app.timezone'),
             'current_server_time' =>
-                Carbon::now('Asia/Kolkata')->toDateTimeString(),
+            Carbon::now('Asia/Kolkata')->toDateTimeString(),
             'environment' => app()->environment(),
         ]);
     }
 
     /**
-     * NEW FEATURE #1
-     *
-     * Calculate the difference between two date/time values.
-     *
-     * POST /api/datetime-difference
+     * Calculate difference between two datetime values.
      */
     public function datetimeDifference(Request $request)
     {
@@ -368,7 +364,7 @@ class DateTimeController extends Controller
             return response()->json([
                 'status' => false,
                 'message' =>
-                    'Invalid date/time format. Example: 2026-08-26 09:00:00',
+                'Invalid date/time format. Example: 2026-08-26 09:00:00',
             ], 422);
         }
 
@@ -376,7 +372,7 @@ class DateTimeController extends Controller
             return response()->json([
                 'status' => false,
                 'message' =>
-                    'End datetime must be greater than or equal to start datetime.',
+                'End datetime must be greater than or equal to start datetime.',
             ], 422);
         }
 
@@ -416,40 +412,35 @@ class DateTimeController extends Controller
         return response()->json([
             'status' => true,
             'message' =>
-                'DateTime difference calculated successfully',
+            'DateTime difference calculated successfully',
 
             'timezone' => $timezone,
 
             'start_datetime' =>
-                $start->toDateTimeString(),
+            $start->toDateTimeString(),
 
             'end_datetime' =>
-                $end->toDateTimeString(),
+            $end->toDateTimeString(),
 
             'difference' => [
                 'days' => $days,
                 'hours' => $hours,
                 'minutes' => $minutes,
                 'seconds' => $seconds,
-                'total_seconds' =>
-                    $start->diffInSeconds($end),
+                'total_seconds' => $totalSeconds,
                 'total_minutes' =>
-                    round($start->diffInSeconds($end) / 60, 2),
+                round($totalSeconds / 60, 2),
                 'total_hours' =>
-                    round($start->diffInSeconds($end) / 3600, 2),
+                round($totalSeconds / 3600, 2),
 
                 'human_readable' =>
-                    implode(' ', $humanReadableParts),
+                implode(' ', $humanReadableParts),
             ],
         ]);
     }
 
     /**
-     * NEW FEATURE #2
-     *
      * Get detailed information about a specific date.
-     *
-     * GET /api/date-info
      */
     public function dateInfo(Request $request)
     {
@@ -472,36 +463,32 @@ class DateTimeController extends Controller
             return response()->json([
                 'status' => false,
                 'message' =>
-                    'Invalid date format. Use YYYY-MM-DD.',
+                'Invalid date format. Use YYYY-MM-DD.',
             ], 422);
         }
 
-        $isWeekend = $dt->isWeekend();
-
-        $dayOfWeek = $dt->dayOfWeek;
-
         $dayNames = [
-            0 => 'Sunday',
-            1 => 'Monday',
-            2 => 'Tuesday',
-            3 => 'Wednesday',
-            4 => 'Thursday',
-            5 => 'Friday',
-            6 => 'Saturday',
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
         ];
 
         return response()->json([
             'status' => true,
             'message' =>
-                'Date information retrieved successfully',
+            'Date information retrieved successfully',
 
             'date' => $dt->toDateString(),
 
             'timezone' => $timezone,
 
             'information' => [
-                'day' => $dayNames[$dayOfWeek],
-                'day_of_week' => $dayOfWeek,
+                'day' => $dayNames[$dt->dayOfWeek],
+                'day_of_week' => $dt->dayOfWeek,
                 'day_of_year' => $dt->dayOfYear,
                 'week_of_year' => $dt->weekOfYear,
 
@@ -513,32 +500,420 @@ class DateTimeController extends Controller
                 'quarter' => $dt->quarter,
 
                 'days_in_month' =>
-                    $dt->daysInMonth,
+                $dt->daysInMonth,
 
-                'is_weekend' => $isWeekend,
+                'is_weekend' =>
+                $dt->isWeekend(),
 
                 'is_leap_year' =>
-                    $dt->isLeapYear(),
+                $dt->isLeapYear(),
 
                 'start_of_month' =>
-                    $dt->copy()
-                        ->startOfMonth()
-                        ->toDateString(),
+                $dt->copy()
+                    ->startOfMonth()
+                    ->toDateString(),
 
                 'end_of_month' =>
-                    $dt->copy()
-                        ->endOfMonth()
-                        ->toDateString(),
+                $dt->copy()
+                    ->endOfMonth()
+                    ->toDateString(),
 
                 'start_of_year' =>
-                    $dt->copy()
-                        ->startOfYear()
-                        ->toDateString(),
+                $dt->copy()
+                    ->startOfYear()
+                    ->toDateString(),
 
                 'end_of_year' =>
-                    $dt->copy()
-                        ->endOfYear()
-                        ->toDateString(),
+                $dt->copy()
+                    ->endOfYear()
+                    ->toDateString(),
+            ],
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | NEW FEATURE #3
+    |--------------------------------------------------------------------------
+    | Date Calculation
+    |
+    | POST /api/date-calculation
+    |--------------------------------------------------------------------------
+    */
+    public function dateCalculation(Request $request)
+    {
+        $request->validate([
+            'date' => 'required|date',
+            'operation' => 'required|in:add,subtract',
+            'value' => 'required|integer|min:1',
+            'unit' => 'required|in:days,weeks,months,years',
+            'timezone' => 'nullable|string',
+        ]);
+
+        $timezone = $this->getValidTimezone(
+            $request->input('timezone', 'Asia/Kolkata')
+        );
+
+        try {
+            $date = Carbon::parse(
+                $request->input('date'),
+                $timezone
+            );
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid date format.',
+            ], 422);
+        }
+
+        $operation = $request->input('operation');
+        $value = (int) $request->input('value');
+        $unit = $request->input('unit');
+
+        $method = $operation === 'add'
+            ? 'add' . ucfirst($unit)
+            : 'sub' . ucfirst($unit);
+
+        $result = $date->copy()->{$method}($value);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Date calculation completed successfully',
+
+            'input' => [
+                'date' => $date->toDateTimeString(),
+                'operation' => $operation,
+                'value' => $value,
+                'unit' => $unit,
+                'timezone' => $timezone,
+            ],
+
+            'result' => [
+                'date' => $result->toDateString(),
+                'date_time' => $result->toDateTimeString(),
+                'day' => $result->format('l'),
+                'timestamp' => $result->getTimestamp(),
+            ],
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | NEW FEATURE #4
+    |--------------------------------------------------------------------------
+    | Age Calculator
+    |
+    | GET /api/age-calculator
+    |--------------------------------------------------------------------------
+    */
+    public function ageCalculator(Request $request)
+    {
+        $request->validate([
+            'birth_date' => 'required|date',
+            'as_of' => 'nullable|date',
+        ]);
+
+        try {
+            $birthDate = Carbon::parse(
+                $request->input('birth_date')
+            );
+
+            $asOf = $request->filled('as_of')
+                ? Carbon::parse($request->input('as_of'))
+                : Carbon::today();
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid date format. Use YYYY-MM-DD.',
+            ], 422);
+        }
+
+        if ($birthDate->greaterThan($asOf)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Birth date cannot be in the future.',
+            ], 422);
+        }
+
+        $difference = $birthDate->diff($asOf);
+
+        $totalDays = $birthDate->diffInDays($asOf);
+
+        $totalMonths = $birthDate->diffInMonths($asOf);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Age calculated successfully',
+
+            'birth_date' =>
+            $birthDate->toDateString(),
+
+            'as_of' =>
+            $asOf->toDateString(),
+
+            'age' => [
+                'years' => $difference->y,
+                'months' => $difference->m,
+                'days' => $difference->d,
+            ],
+
+            'total' => [
+                'days' => $totalDays,
+                'months' => $totalMonths,
+            ],
+
+            'next_birthday' => [
+                'date' => Carbon::create(
+                    $asOf->year,
+                    $birthDate->month,
+                    $birthDate->day
+                )->toDateString(),
+            ],
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | NEW FEATURE #5
+    |--------------------------------------------------------------------------
+    | Unix Timestamp Converter
+    |
+    | GET /api/timestamp
+    |--------------------------------------------------------------------------
+    */
+    public function timestamp(Request $request)
+    {
+        $request->validate([
+            'timestamp' => 'nullable|integer',
+            'datetime' => 'nullable|string',
+            'timezone' => 'nullable|string',
+        ]);
+
+        if (!$request->filled('timestamp') && !$request->filled('datetime')) {
+            $now = Carbon::now(
+                $this->getValidTimezone(
+                    $request->query('timezone', 'Asia/Kolkata')
+                )
+            );
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Current timestamp generated successfully',
+                'timestamp' => $now->getTimestamp(),
+                'datetime' => $now->toDateTimeString(),
+                'iso8601' => $now->toIso8601String(),
+                'timezone' => $now->getTimezone()->getName(),
+            ]);
+        }
+
+        try {
+            if ($request->filled('timestamp')) {
+                $timestamp = (int) $request->input('timestamp');
+
+                $timezone = $this->getValidTimezone(
+                    $request->query('timezone', 'Asia/Kolkata')
+                );
+
+                $dt = Carbon::createFromTimestamp(
+                    $timestamp,
+                    $timezone
+                );
+            } else {
+                $timezone = $this->getValidTimezone(
+                    $request->query('timezone', 'Asia/Kolkata')
+                );
+
+                $dt = Carbon::parse(
+                    $request->input('datetime'),
+                    $timezone
+                );
+
+                $timestamp = $dt->getTimestamp();
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid timestamp or datetime.',
+            ], 422);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Timestamp converted successfully',
+
+            'timestamp' => $timestamp,
+
+            'datetime' =>
+            $dt->toDateTimeString(),
+
+            'date' =>
+            $dt->toDateString(),
+
+            'time' =>
+            $dt->toTimeString(),
+
+            'day' =>
+            $dt->format('l'),
+
+            'iso8601' =>
+            $dt->toIso8601String(),
+
+            'timezone' =>
+            $dt->getTimezone()->getName(),
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | NEW FEATURE #6
+    |--------------------------------------------------------------------------
+    | Business Days Calculator
+    |
+    | GET /api/business-days
+    |--------------------------------------------------------------------------
+    */
+    public function businessDays(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+        ]);
+
+        try {
+            $start = Carbon::parse(
+                $request->query('start_date')
+            )->startOfDay();
+
+            $end = Carbon::parse(
+                $request->query('end_date')
+            )->startOfDay();
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid date format.',
+            ], 422);
+        }
+
+        if ($end->lessThan($start)) {
+            return response()->json([
+                'status' => false,
+                'message' =>
+                'End date must be greater than or equal to start date.',
+            ], 422);
+        }
+
+        $totalDays = $start->diffInDays($end) + 1;
+
+        $businessDays = 0;
+        $weekendDays = 0;
+
+        $current = $start->copy();
+
+        while ($current->lessThanOrEqualTo($end)) {
+            if ($current->isWeekend()) {
+                $weekendDays++;
+            } else {
+                $businessDays++;
+            }
+
+            $current->addDay();
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Business days calculated successfully',
+
+            'start_date' =>
+            $start->toDateString(),
+
+            'end_date' =>
+            $end->toDateString(),
+
+            'total_calendar_days' =>
+            $totalDays,
+
+            'business_days' =>
+            $businessDays,
+
+            'weekend_days' =>
+            $weekendDays,
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | NEW FEATURE #7
+    |--------------------------------------------------------------------------
+    | Weekday Finder
+    |
+    | GET /api/weekday-finder
+    |--------------------------------------------------------------------------
+    */
+    public function weekdayFinder(Request $request)
+    {
+        $request->validate([
+            'date' => 'required|date',
+            'weekday' => 'required|integer|min:0|max:6',
+            'direction' => 'required|in:next,previous',
+        ]);
+
+        try {
+            $date = Carbon::parse(
+                $request->query('date')
+            )->startOfDay();
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid date format.',
+            ], 422);
+        }
+
+        $weekday = (int) $request->query('weekday');
+
+        $direction = $request->query('direction');
+
+        $dayNames = [
+            0 => 'Sunday',
+            1 => 'Monday',
+            2 => 'Tuesday',
+            3 => 'Wednesday',
+            4 => 'Thursday',
+            5 => 'Friday',
+            6 => 'Saturday',
+        ];
+
+        $result = $date->copy();
+
+        if ($direction === 'next') {
+            $result->next($weekday);
+        } else {
+            $result->previous($weekday);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Weekday calculated successfully',
+
+            'input' => [
+                'date' =>
+                $date->toDateString(),
+
+                'weekday' =>
+                $dayNames[$weekday],
+
+                'direction' =>
+                $direction,
+            ],
+
+            'result' => [
+                'date' =>
+                $result->toDateString(),
+
+                'day' =>
+                $result->format('l'),
+
+                'days_difference' =>
+                abs($date->diffInDays($result)),
             ],
         ]);
     }

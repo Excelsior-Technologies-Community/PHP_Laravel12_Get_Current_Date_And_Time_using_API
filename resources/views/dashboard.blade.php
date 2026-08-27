@@ -2,20 +2,17 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>DateTime Dashboard</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
 
         body {
@@ -28,30 +25,24 @@
             font-family: 'Orbitron', monospace;
         }
 
+        .clock-container {
+            background:
+                radial-gradient(ellipse at center,
+                    #0f172a 0%,
+                    #0a0a0f 70%);
+        }
+
         .clock-face {
-            background: radial-gradient(
-                circle at 30% 30%,
-                #1e293b 0%,
-                #0f172a 50%,
-                #020617 100%
-            );
+            background:
+                radial-gradient(circle at 30% 30%,
+                    #1e293b 0%,
+                    #0f172a 50%,
+                    #020617 100%);
 
             box-shadow:
                 inset 0 2px 20px rgba(0, 0, 0, 0.8),
                 0 25px 50px -12px rgba(0, 0, 0, 0.8),
                 0 0 0 1px rgba(148, 163, 184, 0.1);
-        }
-
-        .digit-segment {
-            background: linear-gradient(
-                180deg,
-                #0f172a 0%,
-                #020617 100%
-            );
-
-            box-shadow:
-                inset 0 2px 4px rgba(0, 0, 0, 0.9),
-                inset 0 -1px 2px rgba(148, 163, 184, 0.05);
         }
 
         .digit-display {
@@ -60,11 +51,7 @@
             text-shadow:
                 0 0 10px rgba(56, 189, 248, 0.8),
                 0 0 20px rgba(56, 189, 248, 0.5),
-                0 0 40px rgba(56, 189, 248, 0.3),
-                0 0 80px rgba(56, 189, 248, 0.2),
-                0 0 120px rgba(56, 189, 248, 0.1);
-
-            letter-spacing: 0.05em;
+                0 0 40px rgba(56, 189, 248, 0.3);
         }
 
         .colon-glow {
@@ -72,8 +59,7 @@
 
             text-shadow:
                 0 0 5px rgba(56, 189, 248, 0.9),
-                0 0 15px rgba(56, 189, 248, 0.5),
-                0 0 30px rgba(56, 189, 248, 0.3);
+                0 0 15px rgba(56, 189, 248, 0.5);
         }
 
         .colon-blink {
@@ -93,11 +79,10 @@
         }
 
         .card {
-            background: linear-gradient(
-                145deg,
-                rgba(30, 41, 59, 0.8) 0%,
-                rgba(15, 23, 42, 0.9) 100%
-            );
+            background:
+                linear-gradient(145deg,
+                    rgba(30, 41, 59, 0.8) 0%,
+                    rgba(15, 23, 42, 0.9) 100%);
 
             border: 1px solid rgba(148, 163, 184, 0.1);
 
@@ -105,6 +90,10 @@
 
             box-shadow:
                 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+
+        .card:hover {
+            border-color: rgba(56, 189, 248, 0.25);
         }
 
         .status-online {
@@ -123,10 +112,7 @@
 
         .pulse-dot {
             animation:
-                pulse
-                2s
-                cubic-bezier(0.4, 0, 0.6, 1)
-                infinite;
+                pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
         @keyframes pulse {
@@ -148,7 +134,6 @@
         }
 
         @keyframes fadeIn {
-
             from {
                 opacity: 0;
                 transform: translateY(15px);
@@ -168,307 +153,246 @@
             background: rgba(56, 189, 248, 0.05);
         }
 
-        .label-glow {
-            text-shadow:
-                0 0 8px rgba(148, 163, 184, 0.3);
-        }
-
-        .time-glow {
-            color: #38bdf8;
-
-            text-shadow:
-                0 0 8px rgba(56, 189, 248, 0.4);
-        }
-
-        .clock-container {
-            background: radial-gradient(
-                ellipse at center,
-                #0f172a 0%,
-                #0a0a0f 70%
-            );
-        }
-
-        .inner-glow {
-            box-shadow:
-                inset 0 0 60px rgba(56, 189, 248, 0.03);
-        }
-
         .datetime-input {
             color-scheme: dark;
         }
 
+        .input-style {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: #cbd5e1;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-style:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 1px #38bdf8;
+        }
+
+        .select-style {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: #cbd5e1;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .select-style:focus {
+            border-color: #38bdf8;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            color: #7dd3fc;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: rgba(56, 189, 248, 0.2);
+            border-color: rgba(56, 189, 248, 0.5);
+        }
+
+        .result-box {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 10px;
+            padding: 14px;
+        }
     </style>
 
 </head>
 
-
 <body class="min-h-screen text-white">
 
-    <div
-        class="clock-container min-h-screen flex flex-col items-center justify-center p-6 md:p-10 inner-glow"
-    >
+    <div class="clock-container min-h-screen p-4 md:p-8">
 
-        <!-- ===================================================== -->
+        <!-- ========================================================= -->
         <!-- HEADER -->
-        <!-- ===================================================== -->
+        <!-- ========================================================= -->
 
         <div class="text-center mb-8 fade-in">
 
-            <h1
-                class="text-2xl md:text-3xl font-bold mb-1 text-sky-400 tracking-wider label-glow"
-            >
+            <h1 class="text-2xl md:text-4xl font-bold text-sky-400 tracking-wider">
                 DateTime Dashboard
             </h1>
 
-            <p class="text-slate-500 text-sm md:text-base">
-                Real-time Global Time Monitor
+            <p class="text-slate-500 mt-2">
+                Real-time Global Time Monitor & Date Tools
             </p>
 
         </div>
 
 
-        <!-- ===================================================== -->
+        <!-- ========================================================= -->
         <!-- MAIN CLOCK -->
-        <!-- ===================================================== -->
+        <!-- ========================================================= -->
 
-        <div
-            class="clock-face rounded-3xl p-10 md:p-16 mb-8 w-full max-w-5xl text-center relative overflow-hidden fade-in"
-        >
+        <div class="clock-face rounded-3xl p-8 md:p-14 mb-8 w-full max-w-6xl mx-auto text-center">
+
+            <div class="mb-5">
+
+                <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full
+                bg-sky-500/10 text-sky-300 text-xs font-medium
+                border border-sky-500/20">
+
+                    <span class="w-2 h-2 bg-emerald-400 rounded-full pulse-dot"></span>
+
+                    LIVE
+
+                </span>
+
+            </div>
+
+
+            <div class="digit-display font-digital
+            text-5xl sm:text-7xl md:text-8xl lg:text-9xl
+            font-bold tracking-wider">
+
+                <span id="clock-hours">00</span>
+
+                <span class="colon-blink colon-glow">:</span>
+
+                <span id="clock-minutes">00</span>
+
+                <span class="colon-blink colon-glow">:</span>
+
+                <span id="clock-seconds">00</span>
+
+            </div>
+
 
             <div
-                class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sky-500/30 to-transparent"
-            ></div>
-
-            <div
-                class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sky-500/20 to-transparent"
-            ></div>
+                id="main-date"
+                class="text-xl md:text-3xl text-slate-300 mt-5">
+                Loading...
+            </div>
 
 
-            <div class="relative z-10">
+            <div class="flex items-center justify-center gap-2 mt-5">
 
-                <div class="mb-6">
+                <span class="text-[10px] uppercase tracking-widest text-slate-500">
+                    Timezone
+                </span>
 
-                    <span
-                        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-500/10 text-sky-300 text-xs font-medium border border-sky-500/20 tracking-wide"
-                    >
-
-                        <span
-                            class="w-1.5 h-1.5 bg-emerald-400 rounded-full pulse-dot"
-                        ></span>
-
-                        LIVE
-
-                    </span>
-
-                </div>
-
-
-                <div
-                    class="digit-display font-digital text-5xl sm:text-7xl md:text-8xl lg:text-[9rem] font-bold mb-3 tracking-wider leading-none"
-                    id="main-clock"
-                >
-
-                    <span
-                        id="clock-hours"
-                        class="inline-block min-w-[1.2em] text-center"
-                    >
-                        00
-                    </span>
-
-                    <span
-                        class="colon-blink colon-glow text-4xl sm:text-6xl md:text-7xl lg:text-[8rem] align-middle mx-1"
-                    >
-                        :
-                    </span>
-
-                    <span
-                        id="clock-minutes"
-                        class="inline-block min-w-[1.2em] text-center"
-                    >
-                        00
-                    </span>
-
-                    <span
-                        class="colon-blink colon-glow text-4xl sm:text-6xl md:text-7xl lg:text-[8rem] align-middle mx-1"
-                    >
-                        :
-                    </span>
-
-                    <span
-                        id="clock-seconds"
-                        class="inline-block min-w-[1.2em] text-center"
-                    >
-                        00
-                    </span>
-
-                </div>
-
-
-                <div
-                    class="text-xl md:text-3xl text-slate-300 font-light mb-5 tracking-wide"
-                    id="main-date"
-                >
-                    Loading...
-                </div>
-
-
-                <div
-                    class="flex items-center justify-center gap-2 text-slate-500 text-xs md:text-sm"
-                >
-
-                    <span class="uppercase tracking-widest text-[10px]">
-                        Timezone
-                    </span>
-
-                    <span class="w-px h-3 bg-slate-700"></span>
-
-                    <span
-                        class="px-3 py-1 bg-sky-500/10 rounded text-sky-300 font-medium border border-sky-500/20 tracking-wide"
-                        id="timezone-display"
-                    >
-                        Asia/Kolkata (IST)
-                    </span>
-
-                </div>
+                <span class="text-sky-300 bg-sky-500/10 border
+                border-sky-500/20 rounded px-3 py-1 text-xs">
+                    Asia/Kolkata (IST)
+                </span>
 
             </div>
 
         </div>
 
 
-        <!-- ===================================================== -->
-        <!-- EXISTING STATUS CARDS -->
-        <!-- ===================================================== -->
+        <!-- ========================================================= -->
+        <!-- STATUS CARDS -->
+        <!-- ========================================================= -->
 
-        <div
-            class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-5xl mb-6"
-        >
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-6xl mx-auto mb-8">
 
             <!-- BUSINESS HOURS -->
 
-            <div
-                class="card rounded-2xl p-5 transition-all duration-200 hover:border-sky-500/20"
-                id="business-hours-card"
-            >
+            <div class="card rounded-2xl p-5">
 
-                <div class="flex items-center gap-2.5 mb-3">
+                <div class="flex items-center gap-3 mb-4">
 
                     <div
-                        class="w-2 h-2 rounded-full bg-slate-600"
                         id="business-indicator"
-                    ></div>
+                        class="w-2.5 h-2.5 rounded-full bg-slate-600"></div>
 
-                    <h3
-                        class="text-sm font-semibold text-slate-300 uppercase tracking-wider"
-                    >
+                    <h3 class="text-sm font-semibold text-slate-300 uppercase">
                         Business Hours
                     </h3>
 
                 </div>
 
-
-                <p
-                    class="text-slate-500 text-[10px] uppercase tracking-wider mb-1"
-                >
+                <p class="text-slate-500 text-xs">
                     Status
                 </p>
 
                 <p
-                    class="text-base font-semibold"
                     id="business-status"
-                >
+                    class="text-base font-semibold mt-1">
                     Checking...
                 </p>
 
                 <p
-                    class="text-[11px] text-slate-600 mt-1.5"
                     id="business-details"
-                ></p>
+                    class="text-xs text-slate-600 mt-2"></p>
 
             </div>
 
 
-            <!-- PUBLIC HOLIDAY -->
+            <!-- HOLIDAY -->
 
-            <div
-                class="card rounded-2xl p-5 transition-all duration-200 hover:border-sky-500/20"
-                id="holiday-card"
-            >
+            <div class="card rounded-2xl p-5">
 
-                <div class="flex items-center gap-2.5 mb-3">
+                <div class="flex items-center gap-3 mb-4">
 
                     <div
-                        class="w-2 h-2 rounded-full bg-slate-600"
                         id="holiday-indicator"
-                    ></div>
+                        class="w-2.5 h-2.5 rounded-full bg-slate-600"></div>
 
-                    <h3
-                        class="text-sm font-semibold text-slate-300 uppercase tracking-wider"
-                    >
+                    <h3 class="text-sm font-semibold text-slate-300 uppercase">
                         Public Holiday
                     </h3>
 
                 </div>
 
-
-                <p
-                    class="text-slate-500 text-[10px] uppercase tracking-wider mb-1"
-                >
+                <p class="text-slate-500 text-xs">
                     Today
                 </p>
 
                 <p
-                    class="text-base font-semibold"
                     id="holiday-status"
-                >
+                    class="text-base font-semibold mt-1">
                     Checking...
                 </p>
 
                 <p
-                    class="text-[11px] text-slate-600 mt-1.5"
                     id="holiday-details"
-                ></p>
+                    class="text-xs text-slate-600 mt-2"></p>
 
             </div>
 
 
-            <!-- SYSTEM STATUS -->
+            <!-- HEALTH -->
 
-            <div
-                class="card rounded-2xl p-5 transition-all duration-200 hover:border-sky-500/20"
-            >
+            <div class="card rounded-2xl p-5">
 
-                <div class="flex items-center gap-2.5 mb-3">
+                <div class="flex items-center gap-3 mb-4">
 
-                    <div
-                        class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"
-                    ></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-dot"></div>
 
-                    <h3
-                        class="text-sm font-semibold text-slate-300 uppercase tracking-wider"
-                    >
+                    <h3 class="text-sm font-semibold text-slate-300 uppercase">
                         System Status
                     </h3>
 
                 </div>
 
-
-                <p
-                    class="text-slate-500 text-[10px] uppercase tracking-wider mb-1"
-                >
+                <p class="text-slate-500 text-xs">
                     API Health
                 </p>
 
-                <p
-                    class="text-base font-semibold status-online"
-                >
+                <p class="text-base font-semibold status-online mt-1">
                     Online
                 </p>
 
                 <p
-                    class="text-[11px] text-slate-600 mt-1.5"
                     id="server-time"
-                >
+                    class="text-xs text-slate-600 mt-2">
                     Server: Loading...
                 </p>
 
@@ -477,159 +401,111 @@
         </div>
 
 
-        <!-- ===================================================== -->
-        <!-- NEW FEATURES -->
-        <!-- ===================================================== -->
+        <!-- ========================================================= -->
+        <!-- FEATURE 1 - DATE INFORMATION -->
+        <!-- ========================================================= -->
 
-        <div
-            class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full max-w-5xl mb-6"
-        >
-
-            <!-- ================================================= -->
-            <!-- DATE INFORMATION -->
-            <!-- ================================================= -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 max-w-6xl mx-auto mb-6">
 
             <div class="card rounded-2xl p-6">
 
-                <div class="flex items-center gap-2.5 mb-5">
+                <div class="flex items-center gap-3 mb-5">
 
-                    <div
-                        class="w-2 h-2 rounded-full bg-sky-400 pulse-dot"
-                    ></div>
+                    <span class="w-2 h-2 bg-sky-400 rounded-full pulse-dot"></span>
 
-                    <h3
-                        class="text-sm font-semibold text-slate-300 uppercase tracking-wider"
-                    >
+                    <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-wider">
                         Date Information
-                    </h3>
+                    </h2>
 
                 </div>
 
 
-                <div class="mb-4">
+                <label class="text-xs text-slate-500">
+                    Select Date
+                </label>
 
-                    <p
-                        class="text-slate-500 text-[10px] uppercase tracking-wider mb-1"
-                    >
-                        Select Date
-                    </p>
-
-                    <input
-                        type="date"
-                        id="date-info-input"
-                        class="datetime-input w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-300 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition"
-                    >
-
-                </div>
+                <input
+                    type="date"
+                    id="date-info-input"
+                    class="input-style datetime-input mt-2">
 
 
-                <div
-                    id="date-info-result"
-                    class="grid grid-cols-2 gap-3"
-                >
+                <div class="grid grid-cols-2 gap-3 mt-5">
 
-                    <!-- DAY -->
-
-                    <div class="bg-slate-900/60 rounded-lg p-3">
-
-                        <p class="text-slate-600 text-[9px] uppercase">
+                    <div class="result-box">
+                        <p class="text-[10px] text-slate-600 uppercase">
                             Day
                         </p>
 
                         <p
                             id="date-info-day"
-                            class="text-sky-400 font-semibold text-sm mt-1"
-                        >
-                            Loading...
+                            class="text-sky-400 font-semibold mt-1">
+                            -
                         </p>
-
                     </div>
 
 
-                    <!-- MONTH -->
-
-                    <div class="bg-slate-900/60 rounded-lg p-3">
-
-                        <p class="text-slate-600 text-[9px] uppercase">
+                    <div class="result-box">
+                        <p class="text-[10px] text-slate-600 uppercase">
                             Month
                         </p>
 
                         <p
                             id="date-info-month"
-                            class="text-sky-400 font-semibold text-sm mt-1"
-                        >
-                            Loading...
+                            class="text-sky-400 font-semibold mt-1">
+                            -
                         </p>
-
                     </div>
 
 
-                    <!-- WEEK -->
-
-                    <div class="bg-slate-900/60 rounded-lg p-3">
-
-                        <p class="text-slate-600 text-[9px] uppercase">
+                    <div class="result-box">
+                        <p class="text-[10px] text-slate-600 uppercase">
                             Week
                         </p>
 
                         <p
                             id="date-info-week"
-                            class="text-slate-300 font-semibold text-sm mt-1"
-                        >
+                            class="text-slate-300 font-semibold mt-1">
                             -
                         </p>
-
                     </div>
 
 
-                    <!-- QUARTER -->
-
-                    <div class="bg-slate-900/60 rounded-lg p-3">
-
-                        <p class="text-slate-600 text-[9px] uppercase">
+                    <div class="result-box">
+                        <p class="text-[10px] text-slate-600 uppercase">
                             Quarter
                         </p>
 
                         <p
                             id="date-info-quarter"
-                            class="text-slate-300 font-semibold text-sm mt-1"
-                        >
+                            class="text-slate-300 font-semibold mt-1">
                             -
                         </p>
-
                     </div>
 
 
-                    <!-- DAYS IN MONTH -->
-
-                    <div class="bg-slate-900/60 rounded-lg p-3">
-
-                        <p class="text-slate-600 text-[9px] uppercase">
-                            Days in Month
+                    <div class="result-box">
+                        <p class="text-[10px] text-slate-600 uppercase">
+                            Days In Month
                         </p>
 
                         <p
                             id="date-info-days"
-                            class="text-slate-300 font-semibold text-sm mt-1"
-                        >
+                            class="text-slate-300 font-semibold mt-1">
                             -
                         </p>
-
                     </div>
 
 
-                    <!-- DAY TYPE -->
+                    <div class="result-box">
 
-                    <div class="bg-slate-900/60 rounded-lg p-3">
-
-                        <p class="text-slate-600 text-[9px] uppercase">
+                        <p class="text-[10px] text-slate-600 uppercase">
                             Day Type
                         </p>
 
                         <p
                             id="date-info-weekend"
-                            class="font-semibold text-sm mt-1"
-                        >
+                            class="font-semibold mt-1">
                             -
                         </p>
 
@@ -640,183 +516,114 @@
             </div>
 
 
-            <!-- ================================================= -->
-            <!-- DATETIME DIFFERENCE -->
-            <!-- ================================================= -->
+            <!-- ===================================================== -->
+            <!-- FEATURE 2 - DATETIME DIFFERENCE -->
+            <!-- ===================================================== -->
 
             <div class="card rounded-2xl p-6">
 
-                <div class="flex items-center gap-2.5 mb-5">
+                <div class="flex items-center gap-3 mb-5">
 
-                    <div
-                        class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"
-                    ></div>
+                    <span class="w-2 h-2 bg-emerald-400 rounded-full pulse-dot"></span>
 
-                    <h3
-                        class="text-sm font-semibold text-slate-300 uppercase tracking-wider"
-                    >
+                    <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-wider">
                         DateTime Difference
-                    </h3>
+                    </h2>
 
                 </div>
 
 
-                <div class="space-y-3">
+                <label class="text-xs text-slate-500">
+                    Start Date & Time
+                </label>
 
-                    <!-- START -->
-
-                    <div>
-
-                        <p
-                            class="text-slate-500 text-[10px] uppercase tracking-wider mb-1"
-                        >
-                            Start Date & Time
-                        </p>
-
-                        <input
-                            type="datetime-local"
-                            id="difference-start"
-                            class="datetime-input w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-300 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition"
-                        >
-
-                    </div>
+                <input
+                    type="datetime-local"
+                    id="difference-start"
+                    class="input-style datetime-input mt-2">
 
 
-                    <!-- END -->
+                <label class="text-xs text-slate-500 block mt-4">
+                    End Date & Time
+                </label>
 
-                    <div>
-
-                        <p
-                            class="text-slate-500 text-[10px] uppercase tracking-wider mb-1"
-                        >
-                            End Date & Time
-                        </p>
-
-                        <input
-                            type="datetime-local"
-                            id="difference-end"
-                            class="datetime-input w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-300 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition"
-                        >
-
-                    </div>
+                <input
+                    type="datetime-local"
+                    id="difference-end"
+                    class="input-style datetime-input mt-2">
 
 
-                    <!-- BUTTON -->
-
-                    <button
-                        type="button"
-                        onclick="calculateDateTimeDifference()"
-                        class="w-full py-2.5 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-300 text-sm font-semibold hover:bg-sky-500/20 hover:border-sky-400/40 transition duration-200"
-                    >
-                        Calculate Difference
-                    </button>
-
-                </div>
+                <button
+                    onclick="calculateDateTimeDifference()"
+                    class="btn-primary mt-4">
+                    Calculate Difference
+                </button>
 
 
-                <!-- RESULT -->
+                <div class="result-box mt-5">
 
-                <div
-                    id="difference-result"
-                    class="mt-5 bg-slate-900/60 rounded-xl p-4"
-                >
-
-                    <p
-                        class="text-slate-600 text-[10px] uppercase tracking-wider"
-                    >
+                    <p class="text-[10px] text-slate-600 uppercase">
                         Result
                     </p>
 
-
                     <p
                         id="difference-human"
-                        class="text-sky-400 font-digital text-lg mt-2"
-                    >
+                        class="text-sky-400 font-digital text-lg mt-2">
                         Enter start and end time
                     </p>
 
 
-                    <div
-                        class="grid grid-cols-2 gap-3 mt-4"
-                    >
-
-                        <!-- DAYS -->
+                    <div class="grid grid-cols-4 gap-3 mt-4">
 
                         <div>
-
-                            <p
-                                class="text-slate-600 text-[9px] uppercase"
-                            >
+                            <p class="text-[9px] text-slate-600 uppercase">
                                 Days
                             </p>
 
                             <p
                                 id="difference-days"
-                                class="text-slate-300 text-sm mt-1"
-                            >
+                                class="text-slate-300 mt-1">
                                 -
                             </p>
-
                         </div>
 
 
-                        <!-- HOURS -->
-
                         <div>
-
-                            <p
-                                class="text-slate-600 text-[9px] uppercase"
-                            >
+                            <p class="text-[9px] text-slate-600 uppercase">
                                 Hours
                             </p>
 
                             <p
                                 id="difference-hours"
-                                class="text-slate-300 text-sm mt-1"
-                            >
+                                class="text-slate-300 mt-1">
                                 -
                             </p>
-
                         </div>
 
 
-                        <!-- MINUTES -->
-
                         <div>
-
-                            <p
-                                class="text-slate-600 text-[9px] uppercase"
-                            >
+                            <p class="text-[9px] text-slate-600 uppercase">
                                 Minutes
                             </p>
 
                             <p
                                 id="difference-minutes"
-                                class="text-slate-300 text-sm mt-1"
-                            >
+                                class="text-slate-300 mt-1">
                                 -
                             </p>
-
                         </div>
 
 
-                        <!-- SECONDS -->
-
                         <div>
-
-                            <p
-                                class="text-slate-600 text-[9px] uppercase"
-                            >
+                            <p class="text-[9px] text-slate-600 uppercase">
                                 Seconds
                             </p>
 
                             <p
                                 id="difference-seconds"
-                                class="text-slate-300 text-sm mt-1"
-                            >
+                                class="text-slate-300 mt-1">
                                 -
                             </p>
-
                         </div>
 
                     </div>
@@ -828,28 +635,420 @@
         </div>
 
 
-        <!-- ===================================================== -->
-        <!-- GLOBAL TIME COMPARISON -->
-        <!-- ===================================================== -->
+        <!-- ========================================================= -->
+        <!-- FEATURE 3 - TIMEZONE CONVERTER -->
+        <!-- ========================================================= -->
 
-        <div
-            class="card rounded-2xl p-6 md:p-8 w-full max-w-5xl"
-        >
+        <div class="card rounded-2xl p-6 max-w-6xl mx-auto mb-6">
+
+            <div class="flex items-center gap-3 mb-5">
+
+                <span class="w-2 h-2 bg-purple-400 rounded-full pulse-dot"></span>
+
+                <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-wider">
+                    Timezone Converter
+                </h2>
+
+            </div>
+
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+                <div>
+
+                    <label class="text-xs text-slate-500">
+                        Date & Time
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="convert-datetime"
+                        class="input-style datetime-input mt-2">
+
+                </div>
+
+
+                <div>
+
+                    <label class="text-xs text-slate-500">
+                        From Timezone
+                    </label>
+
+                    <select
+                        id="from-timezone"
+                        class="select-style mt-2">
+
+                        <option value="Asia/Kolkata">
+                            Asia/Kolkata
+                        </option>
+
+                        <option value="UTC">
+                            UTC
+                        </option>
+
+                        <option value="America/New_York">
+                            America/New_York
+                        </option>
+
+                        <option value="America/Los_Angeles">
+                            America/Los_Angeles
+                        </option>
+
+                        <option value="Europe/London">
+                            Europe/London
+                        </option>
+
+                        <option value="Europe/Paris">
+                            Europe/Paris
+                        </option>
+
+                        <option value="Asia/Tokyo">
+                            Asia/Tokyo
+                        </option>
+
+                        <option value="Asia/Dubai">
+                            Asia/Dubai
+                        </option>
+
+                        <option value="Asia/Singapore">
+                            Asia/Singapore
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label class="text-xs text-slate-500">
+                        To Timezone
+                    </label>
+
+                    <select
+                        id="to-timezone"
+                        class="select-style mt-2">
+
+                        <option value="UTC">
+                            UTC
+                        </option>
+
+                        <option value="Asia/Kolkata">
+                            Asia/Kolkata
+                        </option>
+
+                        <option value="America/New_York">
+                            America/New_York
+                        </option>
+
+                        <option value="America/Los_Angeles">
+                            America/Los_Angeles
+                        </option>
+
+                        <option value="Europe/London">
+                            Europe/London
+                        </option>
+
+                        <option value="Europe/Paris">
+                            Europe/Paris
+                        </option>
+
+                        <option value="Asia/Tokyo">
+                            Asia/Tokyo
+                        </option>
+
+                        <option value="Asia/Dubai">
+                            Asia/Dubai
+                        </option>
+
+                        <option value="Asia/Singapore">
+                            Asia/Singapore
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="flex items-end">
+
+                    <button
+                        onclick="convertTimezone()"
+                        class="btn-primary">
+                        Convert Time
+                    </button>
+
+                </div>
+
+            </div>
+
 
             <div
-                class="flex items-center justify-between mb-5"
-            >
+                id="conversion-result"
+                class="result-box mt-5 hidden">
 
-                <h2
-                    class="text-base md:text-lg font-semibold text-slate-300 uppercase tracking-wider"
-                >
+                <p class="text-[10px] text-slate-600 uppercase">
+                    Converted DateTime
+                </p>
+
+                <p
+                    id="converted-value"
+                    class="text-sky-400 font-digital text-xl mt-2">
+                    -
+                </p>
+
+                <p
+                    id="converted-details"
+                    class="text-xs text-slate-500 mt-2">
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+        <!-- FEATURE 4 - ADD / SUBTRACT DAYS -->
+        <!-- ========================================================= -->
+
+        <div class="card rounded-2xl p-6 max-w-6xl mx-auto mb-6">
+
+            <div class="flex items-center gap-3 mb-5">
+
+                <span class="w-2 h-2 bg-orange-400 rounded-full pulse-dot"></span>
+
+                <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-wider">
+                    Add / Subtract Days
+                </h2>
+
+            </div>
+
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+                <div>
+
+                    <label class="text-xs text-slate-500">
+                        Start Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="add-date"
+                        class="input-style datetime-input mt-2">
+
+                </div>
+
+
+                <div>
+
+                    <label class="text-xs text-slate-500">
+                        Number of Days
+                    </label>
+
+                    <input
+                        type="number"
+                        id="add-days"
+                        value="7"
+                        min="0"
+                        class="input-style mt-2">
+
+                </div>
+
+
+                <div>
+
+                    <label class="text-xs text-slate-500">
+                        Operation
+                    </label>
+
+                    <select
+                        id="add-operation"
+                        class="select-style mt-2">
+
+                        <option value="add">
+                            Add Days
+                        </option>
+
+                        <option value="subtract">
+                            Subtract Days
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="flex items-end">
+
+                    <button
+                        onclick="calculateAddSubtractDays()"
+                        class="btn-primary">
+                        Calculate
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="result-box mt-5">
+
+                <p class="text-[10px] text-slate-600 uppercase">
+                    Result
+                </p>
+
+                <p
+                    id="add-days-result"
+                    class="text-orange-400 font-digital text-xl mt-2">
+                    -
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+        <!-- FEATURE 5 - DATE RANGE CALCULATOR -->
+        <!-- ========================================================= -->
+
+        <div class="card rounded-2xl p-6 max-w-6xl mx-auto mb-6">
+
+            <div class="flex items-center gap-3 mb-5">
+
+                <span class="w-2 h-2 bg-pink-400 rounded-full pulse-dot"></span>
+
+                <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-wider">
+                    Date Range Calculator
+                </h2>
+
+            </div>
+
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                <div>
+
+                    <label class="text-xs text-slate-500">
+                        Start Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="range-start"
+                        class="input-style datetime-input mt-2">
+
+                </div>
+
+
+                <div>
+
+                    <label class="text-xs text-slate-500">
+                        End Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="range-end"
+                        class="input-style datetime-input mt-2">
+
+                </div>
+
+
+                <div class="flex items-end">
+
+                    <button
+                        onclick="calculateDateRange()"
+                        class="btn-primary">
+                        Calculate Range
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5">
+
+                <div class="result-box">
+
+                    <p class="text-[10px] text-slate-600 uppercase">
+                        Days
+                    </p>
+
+                    <p
+                        id="range-days"
+                        class="text-pink-400 font-semibold text-xl mt-1">
+                        -
+                    </p>
+
+                </div>
+
+
+                <div class="result-box">
+
+                    <p class="text-[10px] text-slate-600 uppercase">
+                        Weeks
+                    </p>
+
+                    <p
+                        id="range-weeks"
+                        class="text-slate-300 font-semibold text-xl mt-1">
+                        -
+                    </p>
+
+                </div>
+
+
+                <div class="result-box">
+
+                    <p class="text-[10px] text-slate-600 uppercase">
+                        Months
+                    </p>
+
+                    <p
+                        id="range-months"
+                        class="text-slate-300 font-semibold text-xl mt-1">
+                        -
+                    </p>
+
+                </div>
+
+
+                <div class="result-box">
+
+                    <p class="text-[10px] text-slate-600 uppercase">
+                        Years
+                    </p>
+
+                    <p
+                        id="range-years"
+                        class="text-slate-300 font-semibold text-xl mt-1">
+                        -
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+        <!-- GLOBAL TIME COMPARISON -->
+        <!-- ========================================================= -->
+
+        <div class="card rounded-2xl p-6 md:p-8 max-w-6xl mx-auto">
+
+            <div class="flex items-center justify-between mb-5">
+
+                <h2 class="text-base md:text-lg font-semibold text-slate-300 uppercase tracking-wider">
                     Global Time Comparison
                 </h2>
 
-                <span
-                    class="text-[10px] text-slate-600 uppercase tracking-wider"
-                >
-                    Auto-refresh: 1s
+                <span class="text-[10px] text-slate-600 uppercase">
+                    Auto Refresh: 1s
                 </span>
 
             </div>
@@ -863,27 +1062,19 @@
 
                         <tr class="border-b border-slate-800">
 
-                            <th
-                                class="text-left py-2.5 px-3 text-slate-500 font-medium text-[10px] uppercase tracking-wider"
-                            >
+                            <th class="text-left py-3 px-3 text-slate-500 text-xs uppercase">
                                 Timezone
                             </th>
 
-                            <th
-                                class="text-left py-2.5 px-3 text-slate-500 font-medium text-[10px] uppercase tracking-wider"
-                            >
+                            <th class="text-left py-3 px-3 text-slate-500 text-xs uppercase">
                                 Date
                             </th>
 
-                            <th
-                                class="text-left py-2.5 px-3 text-slate-500 font-medium text-[10px] uppercase tracking-wider"
-                            >
+                            <th class="text-left py-3 px-3 text-slate-500 text-xs uppercase">
                                 Time
                             </th>
 
-                            <th
-                                class="text-left py-2.5 px-3 text-slate-500 font-medium text-[10px] uppercase tracking-wider"
-                            >
+                            <th class="text-left py-3 px-3 text-slate-500 text-xs uppercase">
                                 Daylight
                             </th>
 
@@ -891,10 +1082,7 @@
 
                     </thead>
 
-
-                    <tbody id="timezone-table">
-
-                    </tbody>
+                    <tbody id="timezone-table"></tbody>
 
                 </table>
 
@@ -903,15 +1091,11 @@
         </div>
 
 
-        <!-- ===================================================== -->
         <!-- FOOTER -->
-        <!-- ===================================================== -->
 
-        <div class="mt-6 text-center">
+        <div class="text-center mt-8">
 
-            <p
-                class="text-slate-700 text-[10px] uppercase tracking-widest"
-            >
+            <p class="text-slate-700 text-xs uppercase tracking-widest">
                 Powered by Laravel 12 API
             </p>
 
@@ -920,33 +1104,41 @@
     </div>
 
 
-    <!-- ========================================================= -->
-    <!-- JAVASCRIPT -->
-    <!-- ========================================================= -->
-
     <script>
-
         const API_BASE = '/api';
 
         const MAIN_TIMEZONE = 'Asia/Kolkata';
 
 
-        // =========================================================
-        // HELPER
-        // =========================================================
+        /* ============================================================
+           HELPER
+        ============================================================ */
 
-        function pad(n) {
+        function pad(number) {
 
-            return n
-                .toString()
-                .padStart(2, '0');
+            return String(number).padStart(2, '0');
 
         }
 
 
-        // =========================================================
-        // MAIN CLOCK
-        // =========================================================
+        function getLocalDateTimeValue(date) {
+
+            return date.getFullYear() +
+                '-' +
+                pad(date.getMonth() + 1) +
+                '-' +
+                pad(date.getDate()) +
+                'T' +
+                pad(date.getHours()) +
+                ':' +
+                pad(date.getMinutes());
+
+        }
+
+
+        /* ============================================================
+           MAIN CLOCK
+        ============================================================ */
 
         function updateClock() {
 
@@ -955,8 +1147,7 @@
 
             const timeFormatter =
                 new Intl.DateTimeFormat(
-                    'en-GB',
-                    {
+                    'en-GB', {
                         timeZone: MAIN_TIMEZONE,
                         hour: '2-digit',
                         minute: '2-digit',
@@ -968,8 +1159,7 @@
 
             const dateFormatter =
                 new Intl.DateTimeFormat(
-                    'en-US',
-                    {
+                    'en-US', {
                         timeZone: MAIN_TIMEZONE,
                         weekday: 'long',
                         year: 'numeric',
@@ -1017,96 +1207,82 @@
 
 
             document.getElementById(
-                'main-date'
-            ).textContent =
+                    'main-date'
+                ).textContent =
                 dateFormatter.format(now);
 
         }
 
 
-        // =========================================================
-        // BUSINESS HOURS
-        // =========================================================
+        /* ============================================================
+           BUSINESS HOURS
+        ============================================================ */
 
         function updateBusinessHours() {
 
             fetch(
-                `${API_BASE}/business-hours?tz=${encodeURIComponent(MAIN_TIMEZONE)}`
-            )
+                    `${API_BASE}/business-hours?tz=${encodeURIComponent(MAIN_TIMEZONE)}`
+                )
 
-                .then(res => {
+                .then(response => {
 
-                    if (!res.ok) {
-                        throw new Error(
-                            'Business hours request failed'
-                        );
+                    if (!response.ok) {
+                        throw new Error('Business hours request failed');
                     }
 
-                    return res.json();
+                    return response.json();
 
                 })
 
                 .then(data => {
 
-                    const statusEl =
-                        document.getElementById(
-                            'business-status'
-                        );
+                    const status =
+                        document.getElementById('business-status');
+
+                    const indicator =
+                        document.getElementById('business-indicator');
+
+                    const details =
+                        document.getElementById('business-details');
 
 
-                    const indicatorEl =
-                        document.getElementById(
-                            'business-indicator'
-                        );
+                    status.textContent = data.message;
 
 
-                    const detailsEl =
-                        document.getElementById(
-                            'business-details'
-                        );
-
-
-                    statusEl.textContent =
-                        data.message;
-
-
-                    statusEl.className =
-                        'text-base font-semibold ' +
+                    status.className =
+                        'text-base font-semibold mt-1 ' +
                         (
-                            data.is_business_hour
-                                ? 'status-online'
-                                : 'status-offline'
+                            data.is_business_hour ?
+                            'status-online' :
+                            'status-offline'
                         );
 
 
-                    indicatorEl.className =
-                        'w-2 h-2 rounded-full ' +
+                    indicator.className =
+                        'w-2.5 h-2.5 rounded-full ' +
                         (
-                            data.is_business_hour
-                                ? 'bg-emerald-400 pulse-dot'
-                                : 'bg-red-400'
+                            data.is_business_hour ?
+                            'bg-emerald-400 pulse-dot' :
+                            'bg-red-400'
                         );
 
 
-                    detailsEl.textContent =
+                    details.textContent =
                         `Current: ${data.current_day} ${data.current_time}`;
 
                 })
 
                 .catch(error => {
 
-                    console.error(
-                        'Business hours error:',
-                        error
-                    );
+                    console.error(error);
 
                     document.getElementById(
                         'business-status'
                     ).textContent = 'Error';
 
                     document.getElementById(
-                        'business-details'
-                    ).textContent =
+                            'business-details'
+                        ).textContent =
                         'Unable to check business hours';
 
                 });
@@ -1114,91 +1290,77 @@
         }
 
 
-        // =========================================================
-        // HOLIDAY STATUS
-        // =========================================================
+        /* ============================================================
+           HOLIDAY
+        ============================================================ */
 
         function updateHolidayStatus() {
 
             fetch(
-                `${API_BASE}/holiday-check?tz=${encodeURIComponent(MAIN_TIMEZONE)}`
-            )
+                    `${API_BASE}/holiday-check?tz=${encodeURIComponent(MAIN_TIMEZONE)}`
+                )
 
-                .then(res => {
+                .then(response => {
 
-                    if (!res.ok) {
-                        throw new Error(
-                            'Holiday request failed'
-                        );
+                    if (!response.ok) {
+                        throw new Error('Holiday request failed');
                     }
 
-                    return res.json();
+                    return response.json();
 
                 })
 
                 .then(data => {
 
-                    const statusEl =
-                        document.getElementById(
-                            'holiday-status'
-                        );
+                    const status =
+                        document.getElementById('holiday-status');
+
+                    const indicator =
+                        document.getElementById('holiday-indicator');
+
+                    const details =
+                        document.getElementById('holiday-details');
 
 
-                    const indicatorEl =
-                        document.getElementById(
-                            'holiday-indicator'
-                        );
+                    status.textContent = data.message;
 
 
-                    const detailsEl =
-                        document.getElementById(
-                            'holiday-details'
-                        );
-
-
-                    statusEl.textContent =
-                        data.message;
-
-
-                    statusEl.className =
-                        'text-base font-semibold ' +
+                    status.className =
+                        'text-base font-semibold mt-1 ' +
                         (
-                            data.is_holiday
-                                ? 'text-orange-400'
-                                : 'status-online'
+                            data.is_holiday ?
+                            'text-orange-400' :
+                            'status-online'
                         );
 
 
-                    indicatorEl.className =
-                        'w-2 h-2 rounded-full ' +
+                    indicator.className =
+                        'w-2.5 h-2.5 rounded-full ' +
                         (
-                            data.is_holiday
-                                ? 'bg-orange-400 pulse-dot'
-                                : 'bg-emerald-400'
+                            data.is_holiday ?
+                            'bg-orange-400 pulse-dot' :
+                            'bg-emerald-400'
                         );
 
 
-                    detailsEl.textContent =
-                        data.is_holiday
-                            ? `Holiday: ${data.holiday?.name || 'Public Holiday'}`
-                            : 'No holiday today';
+                    details.textContent =
+                        data.is_holiday ?
+                        `Holiday: ${data.holiday?.name || 'Public Holiday'}` :
+                        'No holiday today';
 
                 })
 
                 .catch(error => {
 
-                    console.error(
-                        'Holiday error:',
-                        error
-                    );
+                    console.error(error);
 
                     document.getElementById(
                         'holiday-status'
                     ).textContent = 'Error';
 
                     document.getElementById(
-                        'holiday-details'
-                    ).textContent =
+                            'holiday-details'
+                        ).textContent =
                         'Unable to check holiday';
 
                 });
@@ -1206,45 +1368,40 @@
         }
 
 
-        // =========================================================
-        // HEALTH CHECK
-        // =========================================================
+        /* ============================================================
+           HEALTH CHECK
+        ============================================================ */
 
         function updateHealthCheck() {
 
             fetch(`${API_BASE}/health`)
 
-                .then(res => {
+                .then(response => {
 
-                    if (!res.ok) {
-                        throw new Error(
-                            'Health check failed'
-                        );
+                    if (!response.ok) {
+                        throw new Error('Health check failed');
                     }
 
-                    return res.json();
+                    return response.json();
 
                 })
 
                 .then(data => {
 
                     document.getElementById(
-                        'server-time'
-                    ).textContent =
+                            'server-time'
+                        ).textContent =
                         `Server: ${data.current_server_time}`;
 
                 })
 
                 .catch(error => {
 
-                    console.error(
-                        'Health check error:',
-                        error
-                    );
+                    console.error(error);
 
                     document.getElementById(
-                        'server-time'
-                    ).textContent =
+                            'server-time'
+                        ).textContent =
                         'Server: Offline';
 
                 });
@@ -1252,25 +1409,25 @@
         }
 
 
-        // =========================================================
-        // TIMEZONE COMPARISON
-        // =========================================================
+        /* ============================================================
+           TIMEZONE COMPARISON
+        ============================================================ */
 
         function updateTimezoneComparison() {
 
             fetch(
-                `${API_BASE}/compare-timezones`
-            )
+                    `${API_BASE}/compare-timezones`
+                )
 
-                .then(res => {
+                .then(response => {
 
-                    if (!res.ok) {
+                    if (!response.ok) {
                         throw new Error(
                             'Timezone request failed'
                         );
                     }
 
-                    return res.json();
+                    return response.json();
 
                 })
 
@@ -1302,60 +1459,58 @@
 
                             row.innerHTML = `
 
-                                <td class="py-2.5 px-3">
+                        <td class="py-3 px-3">
 
-                                    <div
-                                        class="font-medium text-slate-300 text-xs md:text-sm label-glow"
-                                    >
-                                        ${tz.label}
-                                    </div>
+                            <span class="text-slate-300 text-sm">
+                                ${tz.label}
+                            </span>
 
-                                </td>
+                        </td>
 
 
-                                <td
-                                    class="py-2.5 px-3 text-slate-500 text-xs md:text-sm"
-                                >
-                                    ${tz.date}
-                                </td>
+                        <td class="py-3 px-3 text-slate-500 text-sm">
+                            ${tz.date}
+                        </td>
 
 
-                                <td class="py-2.5 px-3">
+                        <td class="py-3 px-3">
 
-                                    <span
-                                        class="font-digital text-sky-400 text-xs md:text-sm time-glow"
-                                    >
-                                        ${tz.time}
-                                    </span>
+                            <span class="font-digital text-sky-400 text-sm">
+                                ${tz.time}
+                            </span>
 
-                                </td>
+                        </td>
 
 
-                                <td class="py-2.5 px-3">
+                        <td class="py-3 px-3">
 
-                                    ${
-                                        tz.is_daylight
+                            ${
+                                tz.is_daylight
 
-                                            ? `
-                                                <span
-                                                    class="px-2 py-0.5 bg-amber-500/10 text-amber-300 rounded text-[10px] border border-amber-500/20"
-                                                >
-                                                    Daylight
-                                                </span>
-                                            `
+                                    ? `
+                                        <span class="px-2 py-1 rounded
+                                            text-[10px]
+                                            bg-amber-500/10
+                                            text-amber-300
+                                            border border-amber-500/20">
+                                            Daylight
+                                        </span>
+                                    `
 
-                                            : `
-                                                <span
-                                                    class="px-2 py-0.5 bg-slate-500/10 text-slate-500 rounded text-[10px] border border-slate-500/20"
-                                                >
-                                                    Standard
-                                                </span>
-                                            `
-                                    }
+                                    : `
+                                        <span class="px-2 py-1 rounded
+                                            text-[10px]
+                                            bg-slate-500/10
+                                            text-slate-500
+                                            border border-slate-500/20">
+                                            Standard
+                                        </span>
+                                    `
+                            }
 
-                                </td>
+                        </td>
 
-                            `;
+                    `;
 
 
                             tbody.appendChild(row);
@@ -1368,36 +1523,34 @@
 
                 .catch(error => {
 
-                    console.error(
-                        'Timezone comparison error:',
-                        error
-                    );
+                    console.error(error);
 
                     document.getElementById(
                         'timezone-table'
                     ).innerHTML = `
 
-                        <tr>
+                <tr>
 
-                            <td
-                                colspan="4"
-                                class="text-center py-6 text-slate-600 text-xs"
-                            >
-                                Failed to load timezone data
-                            </td>
+                    <td
+                        colspan="4"
+                        class="text-center py-6 text-slate-600 text-xs"
+                    >
+                        Failed to load timezone data
+                    </td>
 
-                        </tr>
+                </tr>
 
-                    `;
+            `;
 
                 });
 
         }
 
 
-        // =========================================================
-        // DATE INFORMATION
-        // =========================================================
+        /* ============================================================
+           FEATURE 1
+           DATE INFORMATION
+        ============================================================ */
 
         function updateDateInformation() {
 
@@ -1407,13 +1560,7 @@
                 );
 
 
-            if (!input) {
-                return;
-            }
-
-
-            const date =
-                input.value;
+            const date = input.value;
 
 
             let url =
@@ -1457,132 +1604,90 @@
 
 
                     document.getElementById(
-                        'date-info-day'
-                    ).textContent =
+                            'date-info-day'
+                        ).textContent =
                         info.day;
 
 
                     document.getElementById(
-                        'date-info-month'
-                    ).textContent =
+                            'date-info-month'
+                        ).textContent =
                         info.month_name;
 
 
                     document.getElementById(
-                        'date-info-week'
-                    ).textContent =
+                            'date-info-week'
+                        ).textContent =
                         `Week ${info.week_of_year}`;
 
 
                     document.getElementById(
-                        'date-info-quarter'
-                    ).textContent =
+                            'date-info-quarter'
+                        ).textContent =
                         `Q${info.quarter}`;
 
 
                     document.getElementById(
-                        'date-info-days'
-                    ).textContent =
+                            'date-info-days'
+                        ).textContent =
                         info.days_in_month;
 
 
-                    const weekendEl =
+                    const weekend =
                         document.getElementById(
                             'date-info-weekend'
                         );
 
 
-                    weekendEl.textContent =
-                        info.is_weekend
-                            ? 'Weekend'
-                            : 'Weekday';
+                    weekend.textContent =
+                        info.is_weekend ?
+                        'Weekend' :
+                        'Weekday';
 
 
-                    weekendEl.className =
-                        'font-semibold text-sm mt-1 ' +
+                    weekend.className =
+                        'font-semibold mt-1 ' +
                         (
-                            info.is_weekend
-                                ? 'text-orange-400'
-                                : 'text-emerald-400'
+                            info.is_weekend ?
+                            'text-orange-400' :
+                            'text-emerald-400'
                         );
 
                 })
 
                 .catch(error => {
 
-                    console.error(
-                        'Date information error:',
-                        error
-                    );
-
+                    console.error(error);
 
                     document.getElementById(
                         'date-info-day'
-                    ).textContent =
-                        'Error';
-
-
-                    document.getElementById(
-                        'date-info-month'
-                    ).textContent =
-                        '-';
-
-
-                    document.getElementById(
-                        'date-info-week'
-                    ).textContent =
-                        '-';
-
-
-                    document.getElementById(
-                        'date-info-quarter'
-                    ).textContent =
-                        '-';
-
-
-                    document.getElementById(
-                        'date-info-days'
-                    ).textContent =
-                        '-';
-
-
-                    document.getElementById(
-                        'date-info-weekend'
-                    ).textContent =
-                        'Unable to load';
+                    ).textContent = 'Error';
 
                 });
 
         }
 
 
-        // =========================================================
-        // DATETIME DIFFERENCE
-        // =========================================================
+        /* ============================================================
+           FEATURE 2
+           DATETIME DIFFERENCE
+        ============================================================ */
 
         function calculateDateTimeDifference() {
 
-            const startInput =
+            const start =
                 document.getElementById(
                     'difference-start'
-                );
-
-
-            const endInput =
-                document.getElementById(
-                    'difference-end'
-                );
-
-
-            const start =
-                startInput.value;
+                ).value;
 
 
             const end =
-                endInput.value;
+                document.getElementById(
+                    'difference-end'
+                ).value;
 
 
-            const humanEl =
+            const result =
                 document.getElementById(
                     'difference-human'
                 );
@@ -1590,11 +1695,8 @@
 
             if (!start || !end) {
 
-                humanEl.textContent =
+                result.textContent =
                     'Please select both date and time';
-
-                humanEl.className =
-                    'text-orange-400 font-digital text-sm mt-2';
 
                 return;
 
@@ -1609,54 +1711,37 @@
                 end.replace('T', ' ') + ':00';
 
 
-            humanEl.textContent =
+            result.textContent =
                 'Calculating...';
-
-            humanEl.className =
-                'text-sky-400 font-digital text-sm mt-2';
 
 
             fetch(
-                `${API_BASE}/datetime-difference`,
-                {
+                    `${API_BASE}/datetime-difference`, {
+                        method: 'POST',
 
-                    method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
 
-                    headers: {
+                            'Accept': 'application/json',
 
-                        'Content-Type':
-                            'application/json',
-
-                        'Accept':
-                            'application/json',
-
-                        'X-CSRF-TOKEN':
-                            document
+                            'X-CSRF-TOKEN': document
                                 .querySelector(
                                     'meta[name="csrf-token"]'
                                 )
-                                ?.getAttribute(
-                                    'content'
-                                ) || ''
+                                ?.getAttribute('content') || ''
+                        },
 
-                    },
+                        body: JSON.stringify({
 
+                            start: startDateTime,
 
-                    body: JSON.stringify({
+                            end: endDateTime,
 
-                        start:
-                            startDateTime,
+                            timezone: MAIN_TIMEZONE
 
-                        end:
-                            endDateTime,
-
-                        timezone:
-                            MAIN_TIMEZONE
-
-                    })
-
-                }
-            )
+                        })
+                    }
+                )
 
                 .then(async response => {
 
@@ -1668,7 +1753,7 @@
 
                         throw new Error(
                             data.message ||
-                            'Unable to calculate difference'
+                            'Calculation failed'
                         );
 
                     }
@@ -1684,106 +1769,372 @@
                         data.difference;
 
 
-                    humanEl.textContent =
+                    result.textContent =
                         difference.human_readable;
 
 
-                    humanEl.className =
-                        'text-sky-400 font-digital text-lg mt-2';
-
-
                     document.getElementById(
-                        'difference-days'
-                    ).textContent =
+                            'difference-days'
+                        ).textContent =
                         difference.days;
 
 
                     document.getElementById(
-                        'difference-hours'
-                    ).textContent =
+                            'difference-hours'
+                        ).textContent =
                         difference.hours;
 
 
                     document.getElementById(
-                        'difference-minutes'
-                    ).textContent =
+                            'difference-minutes'
+                        ).textContent =
                         difference.minutes;
 
 
                     document.getElementById(
-                        'difference-seconds'
-                    ).textContent =
+                            'difference-seconds'
+                        ).textContent =
                         difference.seconds;
 
                 })
 
                 .catch(error => {
 
-                    console.error(
-                        'DateTime difference error:',
-                        error
-                    );
-
-
-                    humanEl.textContent =
-                        error.message ||
-                        'Calculation failed';
-
-
-                    humanEl.className =
-                        'text-red-400 font-digital text-sm mt-2';
-
-
-                    document.getElementById(
-                        'difference-days'
-                    ).textContent =
-                        '-';
-
-
-                    document.getElementById(
-                        'difference-hours'
-                    ).textContent =
-                        '-';
-
-
-                    document.getElementById(
-                        'difference-minutes'
-                    ).textContent =
-                        '-';
-
-
-                    document.getElementById(
-                        'difference-seconds'
-                    ).textContent =
-                        '-';
+                    result.textContent =
+                        error.message;
 
                 });
 
         }
 
 
-        // =========================================================
-        // SET DEFAULT DATES
-        // =========================================================
+        /* ============================================================
+           FEATURE 3
+           TIMEZONE CONVERTER
+        ============================================================ */
 
-        function initializeDateInputs() {
+        function convertTimezone() {
+
+            const datetime =
+                document.getElementById(
+                    'convert-datetime'
+                ).value;
+
+
+            const fromTimezone =
+                document.getElementById(
+                    'from-timezone'
+                ).value;
+
+
+            const toTimezone =
+                document.getElementById(
+                    'to-timezone'
+                ).value;
+
+
+            if (!datetime) {
+
+                alert(
+                    'Please select date and time'
+                );
+
+                return;
+
+            }
+
+
+            const formatted =
+                datetime.replace('T', ' ') + ':00';
+
+
+            fetch(
+                    `${API_BASE}/convert`, {
+
+                        method: 'POST',
+
+                        headers: {
+
+                            'Content-Type': 'application/json',
+
+                            'Accept': 'application/json',
+
+                            'X-CSRF-TOKEN': document
+                                .querySelector(
+                                    'meta[name="csrf-token"]'
+                                )
+                                ?.getAttribute('content') || ''
+
+                        },
+
+                        body: JSON.stringify({
+
+                            datetime: formatted,
+
+                            from_timezone: fromTimezone,
+
+                            to_timezone: toTimezone
+
+                        })
+
+                    }
+                )
+
+                .then(async response => {
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.message ||
+                            'Timezone conversion failed'
+                        );
+
+                    }
+
+
+                    return data;
+
+                })
+
+                .then(data => {
+
+                    document.getElementById(
+                        'conversion-result'
+                    ).classList.remove('hidden');
+
+
+                    document.getElementById(
+                            'converted-value'
+                        ).textContent =
+                        data.converted_datetime;
+
+
+                    document.getElementById(
+                            'converted-details'
+                        ).textContent =
+                        `${data.from_timezone} → ${data.to_timezone}`;
+
+                })
+
+                .catch(error => {
+
+                    alert(error.message);
+
+                });
+
+        }
+
+
+        /* ============================================================
+           FEATURE 4
+           ADD / SUBTRACT DAYS
+           
+           NOTE:
+           This feature is frontend calculation.
+        ============================================================ */
+
+        function calculateAddSubtractDays() {
+
+            const date =
+                document.getElementById(
+                    'add-date'
+                ).value;
+
+
+            const days =
+                parseInt(
+                    document.getElementById(
+                        'add-days'
+                    ).value
+                );
+
+
+            const operation =
+                document.getElementById(
+                    'add-operation'
+                ).value;
+
+
+            if (!date || isNaN(days)) {
+
+                alert(
+                    'Please enter date and number of days'
+                );
+
+                return;
+
+            }
+
+
+            const selectedDate =
+                new Date(
+                    date + 'T00:00:00'
+                );
+
+
+            if (operation === 'add') {
+
+                selectedDate.setDate(
+                    selectedDate.getDate() + days
+                );
+
+            } else {
+
+                selectedDate.setDate(
+                    selectedDate.getDate() - days
+                );
+
+            }
+
+
+            const result =
+                selectedDate.getFullYear() +
+                '-' +
+                pad(selectedDate.getMonth() + 1) +
+                '-' +
+                pad(selectedDate.getDate());
+
+
+            document.getElementById(
+                    'add-days-result'
+                ).textContent =
+                result;
+
+        }
+
+
+        /* ============================================================
+           FEATURE 5
+           DATE RANGE CALCULATOR
+           
+           NOTE:
+           This feature is frontend calculation.
+        ============================================================ */
+
+        function calculateDateRange() {
+
+            const start =
+                document.getElementById(
+                    'range-start'
+                ).value;
+
+
+            const end =
+                document.getElementById(
+                    'range-end'
+                ).value;
+
+
+            if (!start || !end) {
+
+                alert(
+                    'Please select both dates'
+                );
+
+                return;
+
+            }
+
+
+            const startDate =
+                new Date(
+                    start + 'T00:00:00'
+                );
+
+
+            const endDate =
+                new Date(
+                    end + 'T00:00:00'
+                );
+
+
+            if (endDate < startDate) {
+
+                alert(
+                    'End date must be greater than start date'
+                );
+
+                return;
+
+            }
+
+
+            const milliseconds =
+                endDate.getTime() -
+                startDate.getTime();
+
+
+            const days =
+                Math.floor(
+                    milliseconds /
+                    (1000 * 60 * 60 * 24)
+                );
+
+
+            const weeks =
+                (days / 7).toFixed(2);
+
+
+            const months =
+                (
+                    days / 30.44
+                ).toFixed(2);
+
+
+            const years =
+                (
+                    days / 365.25
+                ).toFixed(2);
+
+
+            document.getElementById(
+                    'range-days'
+                ).textContent =
+                days;
+
+
+            document.getElementById(
+                    'range-weeks'
+                ).textContent =
+                weeks;
+
+
+            document.getElementById(
+                    'range-months'
+                ).textContent =
+                months;
+
+
+            document.getElementById(
+                    'range-years'
+                ).textContent =
+                years;
+
+        }
+
+
+        /* ============================================================
+           INITIALIZE INPUTS
+        ============================================================ */
+
+        function initializeInputs() {
 
             const now =
                 new Date();
 
 
-            // Today's date
+            /* DATE */
 
-            const todayString =
+            const today =
                 now.getFullYear() +
                 '-' +
-                String(
-                    now.getMonth() + 1
-                ).padStart(2, '0') +
+                pad(now.getMonth() + 1) +
                 '-' +
-                String(
-                    now.getDate()
-                ).padStart(2, '0');
+                pad(now.getDate());
 
 
             const dateInput =
@@ -1795,8 +2146,7 @@
             if (dateInput) {
 
                 dateInput.value =
-                    todayString;
-
+                    today;
 
                 dateInput.addEventListener(
                     'change',
@@ -1806,93 +2156,68 @@
             }
 
 
-            // Current datetime
+            /* DIFFERENCE */
 
             const currentDateTime =
-                now.getFullYear() +
-                '-' +
-                String(
-                    now.getMonth() + 1
-                ).padStart(2, '0') +
-                '-' +
-                String(
-                    now.getDate()
-                ).padStart(2, '0'
-                ) +
-                'T' +
-                String(
-                    now.getHours()
-                ).padStart(2, '0') +
-                ':' +
-                String(
-                    now.getMinutes()
-                ).padStart(2, '0');
+                getLocalDateTimeValue(now);
 
 
-            const startInput =
-                document.getElementById(
+            const tomorrow =
+                new Date(
+                    now.getTime() +
+                    (24 * 60 * 60 * 1000)
+                );
+
+
+            document.getElementById(
                     'difference-start'
-                );
+                ).value =
+                currentDateTime;
 
 
-            const endInput =
-                document.getElementById(
+            document.getElementById(
                     'difference-end'
-                );
+                ).value =
+                getLocalDateTimeValue(tomorrow);
 
 
-            if (startInput) {
+            /* CONVERTER */
 
-                startInput.value =
-                    currentDateTime;
-
-            }
-
-
-            if (endInput) {
-
-                const futureDate =
-                    new Date(
-                        now.getTime() +
-                        24 * 60 * 60 * 1000
-                    );
+            document.getElementById(
+                    'convert-datetime'
+                ).value =
+                currentDateTime;
 
 
-                const futureDateTime =
-                    futureDate.getFullYear() +
-                    '-' +
-                    String(
-                        futureDate.getMonth() + 1
-                    ).padStart(2, '0') +
-                    '-' +
-                    String(
-                        futureDate.getDate()
-                    ).padStart(2, '0') +
-                    'T' +
-                    String(
-                        futureDate.getHours()
-                    ).padStart(2, '0') +
-                    ':' +
-                    String(
-                        futureDate.getMinutes()
-                    ).padStart(2, '0');
+            /* ADD / SUBTRACT */
+
+            document.getElementById(
+                    'add-date'
+                ).value =
+                today;
 
 
-                endInput.value =
-                    futureDateTime;
+            /* RANGE */
 
-            }
+            document.getElementById(
+                    'range-start'
+                ).value =
+                today;
+
+
+            document.getElementById(
+                    'range-end'
+                ).value =
+                today;
 
         }
 
 
-        // =========================================================
-        // INITIALIZE DASHBOARD
-        // =========================================================
+        /* ============================================================
+           INIT
+        ============================================================ */
 
         function init() {
-
-            // Existing features
 
             updateClock();
 
@@ -1905,14 +2230,10 @@
             updateTimezoneComparison();
 
 
-            // New features
-
-            initializeDateInputs();
+            initializeInputs();
 
             updateDateInformation();
 
-
-            // Refresh intervals
 
             setInterval(
                 updateClock,
@@ -1950,7 +2271,6 @@
             'DOMContentLoaded',
             init
         );
-
     </script>
 
 </body>
